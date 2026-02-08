@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Payments - FitTrack{% endblock %}
+{% block page_title %}Payment Management{% endblock %}
+
+{% block content %}
+<!-- Revenue Summary -->
+<div class="stats-grid">
+    <div class="stat-card green">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="total-revenue">₹0</div>
+    </div>
+    
+    <div class="stat-card orange">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-label">Pending Payments</div>
+        <div class="stat-value" id="pending-payments">₹0</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">This Month</div>
+        <div class="stat-value" id="monthly-revenue">₹0</div>
+    </div>
+</div>
+
+<!-- Payment Records -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Payments</h2>
+        <button class="btn btn-primary" onclick="openAddPaymentModal()">
+            + Record New Payment
+        </button>
+    </div>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-payment" 
+               placeholder="Search by member name...">
+        <select class="form-control" id="filter-type" style="max-width: 200px;">
+            <option value="">All Payment Types</option>
+            <option value="Membership_Fee">Membership Fee</option>
+            <option value="Personal_Training">Personal Training</option>
+            <option value="Product">Product</option>
+        </select>
+        <select class="form-control" id="filter-status" style="max-width: 200px;">
+            <option value="">All Status</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+        </select>
+    </div>
+    
+    <div class="table-container">
+        <table id="payments-table">
+            <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Date</th>
+                    <th>Member Name</th>
+                    <th>Amount</th>
+                    <th>Payment Type</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Record New Payment</h3>
+            <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+        </div>
+        
+        <form id="payment-form">
+            <div class="form-group">
+                <label>Select Member *</label>
+                <select class="form-control" id="member-id" required>
+                    <option value="">Choose a member...</option>
+                    <!-- JavaScript will populate -->
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Amount (₹) *</label>
+                    <input type="number" class="form-control" id="amount" 
+                           min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Payment Date *</label>
+                    <input type="date" class="form-control" id="payment-date" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Payment Method *</label>
+                    <select class="form-control" id="payment-method" required>
+                        <option value="">Select Method</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Bank_Transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Payment Type *</label>
+                    <select class="form-control" id="payment-type" required>
+                        <option value="">Select Type</option>
+                        <option value="Membership_Fee">Membership Fee</option>
+                        <option value="Personal_Training">Personal Training</option>
+                        <option value="Product">Product</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Status *</label>
+                <select class="form-control" id="status" required>
+                    <option value="">Select Status</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Failed">Failed</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea class="form-control" id="notes" rows="2"></textarea>
+            </div>
+            
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closePaymentModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Record Payment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/main.js"></script>
+{% endblock %}

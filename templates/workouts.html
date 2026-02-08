@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Workout Plans - FitTrack{% endblock %}
+{% block page_title %}Workout Plan Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Workout Plans</h2>
+        <button class="btn btn-primary" onclick="openAddWorkoutModal()">
+            + Create New Plan
+        </button>
+    </div>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-workout" 
+               placeholder="Search by plan name...">
+        <select class="form-control" id="filter-difficulty" style="max-width: 200px;">
+            <option value="">All Difficulty Levels</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+        </select>
+    </div>
+    
+    <div class="table-container">
+        <table id="workouts-table">
+            <thead>
+                <tr>
+                    <th>Plan ID</th>
+                    <th>Plan Name</th>
+                    <th>Difficulty Level</th>
+                    <th>Duration (Weeks)</th>
+                    <th>Created By</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Workout Plan Modal -->
+<div id="workoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Create New Workout Plan</h3>
+            <button class="close-btn" onclick="closeWorkoutModal()">&times;</button>
+        </div>
+        
+        <form id="workout-form">
+            <input type="hidden" id="workout-id">
+            
+            <div class="form-group">
+                <label>Plan Name *</label>
+                <input type="text" class="form-control" id="plan-name" 
+                       placeholder="e.g., Beginner Full Body" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Difficulty Level *</label>
+                    <select class="form-control" id="difficulty" required>
+                        <option value="">Select Difficulty</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duration (Weeks) *</label>
+                    <input type="number" class="form-control" id="duration" 
+                           min="1" max="52" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Created By Trainer *</label>
+                <select class="form-control" id="trainer-id" required>
+                    <option value="">Select Trainer</option>
+                    <!-- JavaScript will populate -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="description" rows="3" 
+                          placeholder="Brief description of the workout plan..."></textarea>
+            </div>
+            
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeWorkoutModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/main.js"></script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Training Sessions - FitTrack{% endblock %}
+{% block page_title %}Training Sessions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Training Sessions</h2>
+        <button class="btn btn-primary" onclick="openBookSessionModal()">
+            + Book New Session
+        </button>
+    </div>
+    
+    <div class="search-bar">
+        <input type="date" class="form-control" id="filter-date" style="max-width: 200px;">
+        <select class="form-control" id="filter-status" style="max-width: 200px;">
+            <option value="">All Status</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-primary" onclick="filterSessions()">Filter</button>
+    </div>
+    
+    <div class="table-container">
+        <table id="sessions-table">
+            <thead>
+                <tr>
+                    <th>Session ID</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Member</th>
+                    <th>Trainer</th>
+                    <th>Session Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Book Session Modal -->
+<div id="sessionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Book Training Session</h3>
+            <button class="close-btn" onclick="closeSessionModal()">&times;</button>
+        </div>
+        
+        <form id="session-form">
+            <input type="hidden" id="session-id">
+            
+            <div class="form-group">
+                <label>Select Member *</label>
+                <select class="form-control" id="member-id" required>
+                    <option value="">Choose a member...</option>
+                    <!-- JavaScript will populate -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Select Trainer *</label>
+                <select class="form-control" id="trainer-id" required onchange="checkTrainerAvailability()">
+                    <option value="">Choose a trainer...</option>
+                    <!-- JavaScript will populate -->
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Session Date *</label>
+                    <input type="date" class="form-control" id="session-date" required onchange="checkTrainerAvailability()">
+                </div>
+                <div class="form-group">
+                    <label>Session Type *</label>
+                    <select class="form-control" id="session-type" required>
+                        <option value="">Select Type</option>
+                        <option value="Personal Training">Personal Training</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Consultation">Consultation</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time *</label>
+                    <input type="time" class="form-control" id="start-time" required onchange="checkTrainerAvailability()">
+                </div>
+                <div class="form-group">
+                    <label>End Time *</label>
+                    <input type="time" class="form-control" id="end-time" required>
+                </div>
+            </div>
+            
+            <div class="alert alert-info" id="availability-message" style="display: none;">
+                Checking trainer availability...
+            </div>
+            
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea class="form-control" id="notes" rows="3"></textarea>
+            </div>
+            
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeSessionModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Book Session</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/main.js"></script>
+{% endblock %}

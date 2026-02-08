@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Equipment - FitTrack{% endblock %}
+{% block page_title %}Equipment Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Equipment Inventory</h2>
+        <button class="btn btn-primary" onclick="openAddEquipmentModal()">
+            + Add New Equipment
+        </button>
+    </div>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-equipment" 
+               placeholder="Search by equipment name...">
+        <select class="form-control" id="filter-status" style="max-width: 200px;">
+            <option value="">All Status</option>
+            <option value="Operational">Operational</option>
+            <option value="Under_Maintenance">Under Maintenance</option>
+            <option value="Out_of_Service">Out of Service</option>
+        </select>
+    </div>
+    
+    <div class="table-container">
+        <table id="equipment-table">
+            <thead>
+                <tr>
+                    <th>Equipment ID</th>
+                    <th>Equipment Name</th>
+                    <th>Type</th>
+                    <th>Purchase Date</th>
+                    <th>Purchase Cost</th>
+                    <th>Status</th>
+                    <th>Last Maintenance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Equipment Modal -->
+<div id="equipmentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Add New Equipment</h3>
+            <button class="close-btn" onclick="closeEquipmentModal()">&times;</button>
+        </div>
+        
+        <form id="equipment-form">
+            <input type="hidden" id="equipment-id">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Equipment Name *</label>
+                    <input type="text" class="form-control" id="equipment-name" 
+                           placeholder="e.g., Treadmill" required>
+                </div>
+                <div class="form-group">
+                    <label>Equipment Type *</label>
+                    <select class="form-control" id="equipment-type" required>
+                        <option value="">Select Type</option>
+                        <option value="Cardio">Cardio</option>
+                        <option value="Strength">Strength</option>
+                        <option value="Free_Weights">Free Weights</option>
+                        <option value="Accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Purchase Date *</label>
+                    <input type="date" class="form-control" id="purchase-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Purchase Cost (₹) *</label>
+                    <input type="number" class="form-control" id="purchase-cost" 
+                           min="0" step="0.01" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select class="form-control" id="status" required>
+                        <option value="">Select Status</option>
+                        <option value="Operational">Operational</option>
+                        <option value="Under_Maintenance">Under Maintenance</option>
+                        <option value="Out_of_Service">Out of Service</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Last Maintenance Date</label>
+                    <input type="date" class="form-control" id="last-maintenance">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Next Maintenance Date</label>
+                <input type="date" class="form-control" id="next-maintenance">
+            </div>
+            
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeEquipmentModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Equipment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/main.js"></script>
+{% endblock %}

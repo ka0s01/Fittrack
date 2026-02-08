@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Trainers - FitTrack{% endblock %}
+{% block page_title %}Trainer Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Trainers</h2>
+        <button class="btn btn-primary" onclick="openAddTrainerModal()">
+            + Add New Trainer
+        </button>
+    </div>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-trainer" 
+               placeholder="Search by name or specialization...">
+        <select class="form-control" id="filter-specialization" style="max-width: 200px;">
+            <option value="">All Specializations</option>
+            <option value="Strength">Strength Training</option>
+            <option value="Yoga">Yoga</option>
+            <option value="Cardio">Cardio</option>
+            <option value="CrossFit">CrossFit</option>
+            <option value="Pilates">Pilates</option>
+        </select>
+    </div>
+    
+    <div class="table-container">
+        <table id="trainers-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+                    <th>Hourly Rate</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Trainer Modal -->
+<div id="trainerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Add New Trainer</h3>
+            <button class="close-btn" onclick="closeTrainerModal()">&times;</button>
+        </div>
+        
+        <form id="trainer-form">
+            <input type="hidden" id="trainer-id">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" class="form-control" id="fname" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" class="form-control" id="lname" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" class="form-control" id="phone" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Specialization *</label>
+                    <select class="form-control" id="specialization" required>
+                        <option value="">Select Specialization</option>
+                        <option value="Strength">Strength Training</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Cardio">Cardio</option>
+                        <option value="CrossFit">CrossFit</option>
+                        <option value="Pilates">Pilates</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Certification *</label>
+                    <input type="text" class="form-control" id="certification" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Years of Experience *</label>
+                    <input type="number" class="form-control" id="experience" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Hourly Rate (₹) *</label>
+                    <input type="number" class="form-control" id="hourly-rate" min="0" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Work Start Time *</label>
+                    <input type="time" class="form-control" id="start-time" required>
+                </div>
+                <div class="form-group">
+                    <label>Work End Time *</label>
+                    <input type="time" class="form-control" id="end-time" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Hire Date *</label>
+                <input type="date" class="form-control" id="hire-date" required>
+            </div>
+            
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeTrainerModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Trainer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/main.js"></script>
+{% endblock %}
