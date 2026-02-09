@@ -804,6 +804,114 @@ function closePaymentModal() {
 }
 
 
+// ==========================================
+// FORM SUBMISSION HANDLERS
+// ==========================================
+
+// Member Form
+const memberForm = document.getElementById('member-form');
+if (memberForm) {
+    memberForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const memberId = document.getElementById('member-id').value;
+        
+        if (memberId) {
+            // Update existing member
+            alert('Member updated successfully!');
+        } else {
+            // Add new member
+            const newMember = {
+                member_id: dummyMembers.length + 1,
+                fname: document.getElementById('fname').value,
+                lname: document.getElementById('lname').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                address: document.getElementById('address').value,
+                plan_name: 'Basic',
+                membership_status: 'Active',
+                membership_start_date: document.getElementById('start-date').value,
+                membership_end_date: '2026-12-31'
+            };
+            
+            dummyMembers.push(newMember);
+            alert('Member added successfully!');
+        }
+        
+        closeModal();
+        loadMembers();
+    });
+}
+
+// Trainer Form
+const trainerForm = document.getElementById('trainer-form');
+if (trainerForm) {
+    trainerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Trainer saved successfully!');
+        closeTrainerModal();
+    });
+}
+
+// Session Form
+const sessionForm = document.getElementById('session-form');
+if (sessionForm) {
+    sessionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Session booked successfully!');
+        closeSessionModal();
+    });
+}
+
+// Workout Form
+const workoutForm = document.getElementById('workout-form');
+if (workoutForm) {
+    workoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Workout plan saved successfully!');
+        closeWorkoutModal();
+    });
+}
+
+// Equipment Form
+const equipmentForm = document.getElementById('equipment-form');
+if (equipmentForm) {
+    equipmentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Equipment saved successfully!');
+        closeEquipmentModal();
+    });
+}
+
+// Payment Form
+const paymentForm = document.getElementById('payment-form');
+if (paymentForm) {
+    paymentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Payment recorded successfully!');
+        closePaymentModal();
+    });
+}
+
+// ==========================================
+// EVENT LISTENERS FOR SEARCH/FILTER
+// ==========================================
+
+// Members search
+const memberSearch = document.getElementById('search-member');
+if (memberSearch) {
+    memberSearch.addEventListener('input', searchMembers);
+}
+
+// Members filter
+const memberFilter = document.getElementById('filter-status');
+if (memberFilter) {
+    memberFilter.addEventListener('change', filterMembersByStatus);
+}
+
+
 //============================
 //Page intialisation functions
 //=============================
