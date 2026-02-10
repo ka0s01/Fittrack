@@ -589,7 +589,7 @@ function loadTodayAttendanceTable() {
 
 // ==========================================
 // SESSIONS PAGE FUNCTIONS
-// ==========================================
+// ==========================================   
 
 function loadSessions() {
     const tbody = document.querySelector('#sessions-table tbody');
@@ -664,6 +664,49 @@ function updateSessionStatus(sessionId, newStatus) {
     }
 }
 
+function filterSessions() {
+    // Get filter values
+    const dateFilter = document.getElementById('filter-date').value;
+    const statusFilter = document.getElementById('filter-status').value;
+    
+    // Get all session rows
+    const rows = document.querySelectorAll('#sessions-table tbody tr');
+    
+    rows.forEach(row => {
+        // Get session data from row
+        const sessionDate = row.cells[1].textContent; // Date is in 2nd column
+        const sessionStatus = row.querySelector('.badge').textContent; // Status badge
+        
+        // Check if row matches filters
+        let showRow = true;
+        
+        // Date filter check
+        if (dateFilter && sessionDate !== dateFilter) {
+            showRow = false;
+        }
+        
+        // Status filter check
+        if (statusFilter && sessionStatus !== statusFilter) {
+            showRow = false;
+        }
+        
+        // Show or hide row
+        row.style.display = showRow ? '' : 'none';
+    });
+}
+
+// Attach event listeners to filter controls
+const sessionDateFilter = document.getElementById('filter-date');
+const sessionStatusFilter = document.getElementById('filter-status');
+
+if (sessionDateFilter) {
+    sessionDateFilter.addEventListener('change', filterSessions);
+}
+
+if (sessionStatusFilter) {
+    sessionStatusFilter.addEventListener('change', filterSessions);
+}
+
 // ==========================================
 // WORKOUTS PAGE FUNCTIONS
 // ==========================================
@@ -709,6 +752,120 @@ function closeWorkoutModal() {
 }
 
 // ==========================================
+// WORKOUT PLANS - SEARCH
+// ==========================================
+
+function searchWorkouts() {
+    // Get search term
+    const searchTerm = document.getElementById('search-workout').value.toLowerCase();
+    
+    // Get all workout plan rows
+    const rows = document.querySelectorAll('#workouts-table tbody tr');
+    
+    rows.forEach(row => {
+        // Get all text content from the row
+        const text = row.textContent.toLowerCase();
+        
+        // Check if row contains search term
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+}
+
+// Attach to search input
+const workoutSearch = document.getElementById('search-workout');
+if (workoutSearch) {
+    workoutSearch.addEventListener('input', searchWorkouts);
+}
+
+// ==========================================
+// WORKOUT PLANS - FILTER BY DIFFICULTY
+// ==========================================
+
+function filterWorkoutsByDifficulty() {
+    // Get selected difficulty
+    const difficulty = document.getElementById('filter-difficulty').value;
+    
+    // Get all workout rows
+    const rows = document.querySelectorAll('#workouts-table tbody tr');
+    
+    rows.forEach(row => {
+        if (!difficulty) {
+            // If "All Difficulty Levels" selected, show everything
+            row.style.display = '';
+        } else {
+            // Get the difficulty badge text from row
+            const rowDifficulty = row.querySelector('.badge').textContent;
+            
+            // Show row only if difficulty matches
+            row.style.display = rowDifficulty === difficulty ? '' : 'none';
+        }
+    });
+}
+
+// Attach to difficulty dropdown
+const difficultyFilter = document.getElementById('filter-difficulty');
+if (difficultyFilter) {
+    difficultyFilter.addEventListener('change', filterWorkoutsByDifficulty);
+}
+
+
+// ==========================================
+// WORKOUT PLANS - SORTING
+// ==========================================
+
+let workoutSortDirection = {}; // Track sort direction for each column
+
+function sortWorkoutTable(columnIndex) {
+    const table = document.querySelector('#workouts-table tbody');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    
+    // Initialize sort direction for this column if not set
+    if (!workoutSortDirection[columnIndex]) {
+        workoutSortDirection[columnIndex] = 1; // 1 = ascending
+    }
+    
+    // Sort rows based on column content
+    rows.sort((a, b) => {
+        let aValue = a.cells[columnIndex].textContent.trim();
+        let bValue = b.cells[columnIndex].textContent.trim();
+        
+        // Handle numeric values (for columns like duration)
+        if (columnIndex === 3) { // Duration column
+            aValue = parseInt(aValue);
+            bValue = parseInt(bValue);
+        }
+        
+        // Compare values
+        if (aValue < bValue) return -1 * workoutSortDirection[columnIndex];
+        if (aValue > bValue) return 1 * workoutSortDirection[columnIndex];
+        return 0;
+    });
+    
+    // Toggle direction for next click
+    workoutSortDirection[columnIndex] *= -1;
+    
+    // Remove all rows and re-append in sorted order
+    rows.forEach(row => table.appendChild(row));
+    
+    // Update header to show sort direction
+    updateSortIndicators(columnIndex);
+}
+
+function updateSortIndicators(activeColumn) {
+    // Remove all existing sort indicators
+    const headers = document.querySelectorAll('#workouts-table th');
+    headers.forEach((header, index) => {
+        // Remove any existing arrows
+        header.textContent = header.textContent.replace(' ↑', '').replace(' ↓', '');
+        
+        // Add arrow to active column
+        if (index === activeColumn) {
+            const arrow = workoutSortDirection[activeColumn] === 1 ? ' ↓' : ' ↑';
+            header.textContent += arrow;
+        }
+    });
+}
+// ==========================================
 // EQUIPMENT PAGE FUNCTIONS
 // ==========================================
 
@@ -744,6 +901,60 @@ function openAddEquipmentModal() {
 
 function closeEquipmentModal() {
     document.getElementById('equipmentModal').classList.remove('show');
+}
+
+// ==========================================
+// EQUIPMENT - ADD NEW EQUIPMENT
+// ==========================================
+
+function saveEquipment(event) {
+    event.preventDefault(); // Prevent form reload
+    
+    // Get form values
+    const newEquipment = {
+        equipment_id: dummyEquipment.length + 1,
+        equipment_name: document.getElementById('equipment-name').value,
+        equipment_type: document.getElementById('equipment-type').value,
+        purchase_date: document.getElementById('purchase-date').value,
+        purchase_cost: parseFloat(document.getElementById('purchase-cost').value),
+        status: document.getElementById('status').value,
+        last_maintenance: document.getElementById('last-maintenance').value || 'N/A'
+    };
+    
+    // Validate required fields
+    if (!newEquipment.equipment_name || !newEquipment.equipment_type || 
+        !newEquipment.purchase_date || !newEquipment.purchase_cost || 
+        !newEquipment.status) {
+        alert('Please fill all required fields!');
+        return;
+    }
+    
+    // Add to dummy array
+    dummyEquipment.push(newEquipment);
+    
+    // Close modal
+    closeEquipmentModal();
+    
+    // Refresh table
+    loadEquipment();
+    
+    // Show success message
+    alert('Equipment added successfully!');
+    // document.getElementById('equipment-name').reset();
+    // document.getElementById('equipment-type').
+    // document.getElementById('purchase-date').value,
+    // document.getElementById('purchase-cost')
+    // document.getElementById('status').value,
+    // document.getElementById('last-maintenance').value
+
+    document.getElementById("equipment-form").reset();
+
+}
+
+// Update the equipment form handler
+const equipmentFormEl = document.getElementById('equipment-form');
+if (equipmentFormEl) {
+    equipmentFormEl.addEventListener('submit', saveEquipment);
 }
 
 // ==========================================
@@ -801,6 +1012,97 @@ function openAddPaymentModal() {
 
 function closePaymentModal() {
     document.getElementById('paymentModal').classList.remove('show');
+}
+// ==========================================
+// PAYMENTS - FILTERING
+// ==========================================
+
+function filterPayments() {
+    // Get filter values
+    const searchTerm = document.getElementById('search-payment').value.toLowerCase();
+    const typeFilter = document.getElementById('filter-type').value;
+    const statusFilter = document.getElementById('filter-status').value;
+    
+    // Get all payment rows
+    const rows = document.querySelectorAll('#payments-table tbody tr');
+    
+    rows.forEach(row => {
+        let showRow = true;
+        
+        // Search filter (member name)
+        if (searchTerm) {
+            const memberName = row.cells[2].textContent.toLowerCase(); // Member name in 3rd column
+            if (!memberName.includes(searchTerm)) {
+                showRow = false;
+            }
+        }
+        
+        // Payment type filter
+        if (typeFilter) {
+            const paymentType = row.cells[4].textContent; // Payment type in 5th column
+            if (!paymentType.includes(typeFilter.replace('_', ' '))) {
+                showRow = false;
+            }
+        }
+        
+        // Status filter
+        if (statusFilter) {
+            const paymentStatus = row.querySelector('.badge').textContent; // Status badge
+            if (paymentStatus !== statusFilter) {
+                showRow = false;
+            }
+        }
+        
+        // Show or hide row
+        row.style.display = showRow ? '' : 'none';
+    });
+    
+    // Update visible count
+    updatePaymentStats();
+}
+
+function updatePaymentStats() {
+    // Count visible rows
+    const visibleRows = document.querySelectorAll('#payments-table tbody tr:not([style*="display: none"])');
+    const visiblePayments = Array.from(visibleRows);
+    
+    // Calculate totals for visible payments only
+    let visibleTotal = 0;
+    let visiblePending = 0;
+    
+    visiblePayments.forEach(row => {
+        const amount = parseFloat(row.cells[3].textContent.replace('₹', '').replace(',', ''));
+        const status = row.querySelector('.badge').textContent;
+        
+        if (status === 'Completed') {
+            visibleTotal += amount;
+        } else if (status === 'Pending') {
+            visiblePending += amount;
+        }
+    });
+    
+    // Update stats if on payments page
+    if (document.getElementById('total-revenue')) {
+        document.getElementById('total-revenue').textContent = '₹' + visibleTotal.toLocaleString();
+        document.getElementById('pending-payments').textContent = '₹' + visiblePending.toLocaleString();
+    }
+}
+
+// Attach event listeners to all payment filters
+const paymentSearch = document.getElementById('search-payment');
+const paymentTypeFilter = document.getElementById('filter-type');
+const paymentStatusFilter = document.getElementById('filter-status');
+
+if (paymentSearch) {
+    paymentSearch.addEventListener('input', filterPayments);
+}
+
+if (paymentTypeFilter) {
+    paymentTypeFilter.addEventListener('change', filterPayments);
+}
+
+if (paymentStatusFilter) {
+    paymentStatusFilter.addEventListener('change', filterPayments);
 }
 
 
