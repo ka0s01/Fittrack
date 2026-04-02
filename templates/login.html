@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack — Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { background: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; }
+
+        .login-wrapper { width: 100%; max-width: 420px; padding: 24px; }
+
+        .login-logo { text-align: center; margin-bottom: 32px; }
+        .login-logo h1 { color: #3b82f6; font-size: 2.2rem; margin: 0; letter-spacing: 1px; }
+        .login-logo p  { color: #94a3b8; margin: 6px 0 0; font-size: 0.9rem; }
+
+        .login-card { background: #1e293b; border-radius: 16px; padding: 36px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+
+        .role-tabs { display: flex; background: #0f172a; border-radius: 10px; padding: 4px; margin-bottom: 28px; gap: 4px; }
+        .role-tab  { flex: 1; padding: 10px 0; text-align: center; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #64748b; border: none; background: transparent; transition: all 0.2s; }
+        .role-tab.active { background: #3b82f6; color: #fff; }
+        .role-tab:hover:not(.active) { color: #cbd5e1; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: #94a3b8; font-size: 0.82rem; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input { width: 100%; padding: 12px 14px; background: #0f172a; border: 1.5px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 0.95rem; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+        .form-group input:focus { border-color: #3b82f6; }
+
+        .login-btn { width: 100%; padding: 13px; background: #3b82f6; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+        .login-btn:hover { background: #2563eb; }
+
+        .error-msg { background: #7f1d1d; color: #fca5a5; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 16px; display: none; border: 1px solid #991b1b; }
+        .error-msg.show { display: block; }
+
+        .role-hint { text-align: center; margin-top: 20px; color: #475569; font-size: 0.8rem; }
+        .role-hint span { color: #3b82f6; }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-logo">
+        <h1>FitTrack</h1>
+        <p>Gym Management System</p>
+    </div>
+
+    <div class="login-card">
+        <div class="role-tabs">
+            <button class="role-tab active" onclick="selectRole('admin', this)">Admin</button>
+            <button class="role-tab" onclick="selectRole('trainer', this)">Trainer</button>
+            <button class="role-tab" onclick="selectRole('member', this)">Member</button>
+        </div>
+
+        <div class="error-msg" id="error-msg"></div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter your password" />
+        </div>
+
+        <button class="login-btn" onclick="doLogin()">Sign In</button>
+
+        <p class="role-hint">Default passwords — Admin: <span>admin123</span> · Trainer: <span>trainer123</span> · Member: <span>member123</span></p>
+    </div>
+</div>
+
+<script>
+    let selectedRole = 'admin';
+
+    function selectRole(role, el) {
+        selectedRole = role;
+        document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('error-msg').classList.remove('show');
+
+        // Auto-fill hint emails for convenience
+        const hints = { admin: 'admin@fittrack.com', trainer: 'rajesh@fittrack.com', member: 'arjun@email.com' };
+        document.getElementById('email').placeholder = hints[role];
+    }
+
+    async function doLogin() {
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errEl    = document.getElementById('error-msg');
+
+        if (!email || !password) {
+            errEl.textContent = 'Please enter email and password.';
+            errEl.classList.add('show');
+            return;
+        }
+
+        const btn = document.querySelector('.login-btn');
+        btn.textContent = 'Signing in...';
+        btn.disabled = true;
+
+        try {
+            const res  = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, role: selectedRole })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                errEl.textContent = data.message || 'Invalid credentials.';
+                errEl.classList.add('show');
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            }
+        } catch (e) {
+            errEl.textContent = 'Server error. Is Flask running?';
+            errEl.classList.add('show');
+            btn.textContent = 'Sign In';
+            btn.disabled = false;
+        }
+    }
+
+    // Allow Enter key
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard — FitTrack{% endblock %}
+{% block page_title %}My Dashboard{% endblock %}
+{% block content %}
+
+<div id="profile-card" class="card" style="margin-bottom:24px;"></div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div class="card">
+        <div class="card-header"><h2>My Sessions</h2></div>
+        <table class="table" id="my-sessions-table">
+            <thead><tr><th>Date</th><th>Trainer</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-header"><h2>My Attendance</h2></div>
+        <table class="table" id="my-attendance-table">
+            <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Duration</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card" style="margin-top:24px;">
+    <div class="card-header"><h2>My Workout Plans</h2></div>
+    <table class="table" id="my-workouts-table">
+        <thead><tr><th>Plan</th><th>Duration</th><th>Trainer</th><th>Assigned</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const [profile, sessions, attendance, workouts] = await Promise.all([
+        apiFetch('/api/my/profile'),
+        apiFetch('/api/sessions'),
+        apiFetch('/api/my/attendance'),
+        apiFetch('/api/my/workouts')
+    ]);
+
+    // Profile card
+    const status = profile.membership_end_date && new Date(profile.membership_end_date) >= new Date() ? 'Active' : 'Expired';
+    document.getElementById('profile-card').innerHTML = `
+        <div style="display:flex;align-items:center;gap:24px;padding:8px 0;">
+            <div style="background:#1e3a5f;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#60a5fa;font-weight:700;">
+                ${profile.fname?.[0] || '?'}
+            </div>
+            <div>
+                <h2 style="margin:0;">${profile.fname} ${profile.lname}</h2>
+                <p style="margin:4px 0;color:#94a3b8;">${profile.email} · ${profile.phone || ''}</p>
+                <span class="badge ${getStatusBadge(status)}">${profile.plan_name || 'No Plan'} — ${status}</span>
+                ${profile.membership_end_date ? `<span style="color:#64748b;margin-left:12px;font-size:0.85rem;">Expires: ${formatDate(profile.membership_end_date)}</span>` : ''}
+            </div>
+        </div>
+    `;
+
+    // Sessions
+    document.querySelector('#my-sessions-table tbody').innerHTML =
+        sessions.map(s => `
+            <tr>
+                <td>${formatDate(s.session_date)}</td>
+                <td>${s.trainer_name}</td>
+                <td>${s.session_type}</td>
+                <td><span class="badge ${getStatusBadge(s.status)}">${s.status}</span></td>
+            </tr>
+        `).join('') || '<tr><td colspan="4" style="text-align:center;color:#64748b;">No sessions booked</td></tr>';
+
+    // Attendance
+    document.querySelector('#my-attendance-table tbody').innerHTML =
+        attendance.map(a => `
+            <tr>
+                <td>${formatDate(a.check_in_date)}</td>
+                <td>${a.check_in_time}</td>
+                <td>${a.check_out_time || '-'}</td>
+                <td>${a.duration ? a.duration + ' hrs' : '-'}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="4" style="text-align:center;color:#64748b;">No attendance records</td></tr>';
+
+    // Workouts
+    document.querySelector('#my-workouts-table tbody').innerHTML =
+        workouts.map(w => `
+            <tr>
+                <td>${w.plan_name}</td>
+                <td>${w.duration_weeks} weeks</td>
+                <td>${w.trainer || '-'}</td>
+                <td>${formatDate(w.assigned_date)}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="4" style="text-align:center;color:#64748b;">No workout plans assigned</td></tr>';
+});
+</script>
+{% endblock %}

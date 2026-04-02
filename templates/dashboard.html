@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FitTrack{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">Total Members</div>
+        <div class="stat-value" id="total-members">0</div>
+    </div>
+    
+    <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Active Members</div>
+        <div class="stat-value" id="active-members">0</div>
+    </div>
+    
+    <div class="stat-card orange">
+        <div class="stat-icon">🏋️</div>
+        <div class="stat-label">Total Trainers</div>
+        <div class="stat-value" id="total-trainers">0</div>
+    </div>
+    
+    <div class="stat-card red">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Revenue (This Month)</div>
+        <div class="stat-value" id="monthly-revenue">₹0</div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Today's Attendance</h2>
+        <span class="badge badge-info" id="today-count">0 Members</span>
+    </div>
+    <div class="table-container">
+        <table id="attendance-table">
+            <thead>
+                <tr>
+                    <th>Member Name</th>
+                    <th>Check-In Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Upcoming Sessions -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Upcoming Training Sessions</h2>
+        <a href="/sessions" class="btn btn-primary btn-sm">View All</a>
+    </div>
+    <div class="table-container">
+        <table id="sessions-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Member</th>
+                    <th>Trainer</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript will populate this -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/config/data.js') }}"></script>
+<script src="{{ url_for('static', filename='js/config/helpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/members.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/trainers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/attendance.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/sessions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/workouts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/equipment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/modules/payments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

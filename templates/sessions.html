@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Training Sessions - FitTrack{% endblock %}
+{% block page_title %}Training Sessions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Training Sessions</h2>
+        {% if user.role == 'admin' %}
+        <button class="btn btn-primary" onclick="openBookSessionModal()">+ Book New Session</button>
+        {% endif %}
+    </div>
+    <div class="search-bar">
+        <input type="date" class="form-control" id="filter-date" style="max-width:200px;">
+        <select class="form-control" id="filter-status" style="max-width:200px;">
+            <option value="">All Status</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-primary" onclick="renderSessionsTable()">Filter</button>
+    </div>
+    <div class="table-container">
+        <table id="sessions-table">
+            <thead>
+                <tr>
+                    <th>Date</th><th>Time</th>
+                    <th>Member</th><th>Trainer</th><th>Session Type</th>
+                    <th>Status</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Book Session Modal -->
+<div id="sessionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Book Training Session</h3>
+            <button class="close-btn" onclick="closeSessionModal()">&times;</button>
+        </div>
+        <form id="session-form">
+            <div class="form-group">
+                <label>Select Member *</label>
+                <select class="form-control" id="member-id" required>
+                    <option value="">Choose a member...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Select Trainer *</label>
+                <select class="form-control" id="trainer-id" required>
+                    <option value="">Choose a trainer...</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Session Date *</label>
+                    <input type="date" class="form-control" id="session-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Session Type *</label>
+                    <select class="form-control" id="session-type" required>
+                        <option value="">Select Type</option>
+                        <option value="Personal Training">Personal Training</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Consultation">Consultation</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time *</label>
+                    <input type="time" class="form-control" id="start-time" required>
+                </div>
+                <div class="form-group">
+                    <label>End Time *</label>
+                    <input type="time" class="form-control" id="end-time" required>
+                </div>
+            </div>
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeSessionModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Book Session</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>const USER_ROLE = "{{ user.role }}";</script>
+{% endblock %}

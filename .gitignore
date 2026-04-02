@@ -1,0 +1,17 @@
+
+# Virtual environment
+venv/
+env/
+ENV/
+# Flask stuff
+instance/
+.webassets-cache
+# Database files (if local SQLite or dumps)
+*.db
+*.sqlite3
+*.sql
+
+# VS Code / IDE
+.vscode/
+.idea/
+

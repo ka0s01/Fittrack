@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Workout Plans - FitTrack{% endblock %}
+{% block page_title %}Workout Plan Management{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Workout Plans</h2>
+        <button class="btn btn-primary" onclick="openAddWorkoutModal()">+ Create New Plan</button>
+    </div>
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-workout" placeholder="Search by plan name...">
+    </div>
+    <div class="table-container">
+        <table id="workouts-table">
+            <thead>
+                <tr>
+                    <th>Plan ID</th>
+                    <th>Plan Name</th>
+                    <th>Duration (Weeks)</th>
+                    <th>Created By</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Workout Modal -->
+<div id="workoutModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="workout-modal-title">Create New Workout Plan</h3>
+            <button class="close-btn" onclick="closeWorkoutModal()">&times;</button>
+        </div>
+        <form id="workout-form">
+            <input type="hidden" id="workout-id">
+            <div class="form-group">
+                <label>Plan Name *</label>
+                <input type="text" class="form-control" id="plan-name" placeholder="e.g., Beginner Full Body" required>
+            </div>
+            <div class="form-group">
+                <label>Duration (Weeks) *</label>
+                <input type="number" class="form-control" id="duration-weeks" min="1" max="52" required>
+            </div>
+            <div class="form-group">
+                <label>Assigned Trainer</label>
+                <select class="form-control" id="workout-trainer-id">
+                    <option value="">Select Trainer</option>
+                </select>
+            </div>
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeWorkoutModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Assign Workout to Member Modal -->
+<div id="assignModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Assign Workout Plan</h3>
+            <button class="close-btn" onclick="closeAssignModal()">&times;</button>
+        </div>
+        <form id="assign-form">
+            <input type="hidden" id="assign-plan-id">
+            <div class="form-group">
+                <label>Plan</label>
+                <input type="text" class="form-control" id="assign-plan-name" readonly style="background:#f1f5f9;">
+            </div>
+            <div class="form-group">
+                <label>Select Member *</label>
+                <select class="form-control" id="assign-member-id" required>
+                    <option value="">Select Member</option>
+                </select>
+            </div>
+            <div class="flex-between mt-20">
+                <button type="button" class="btn btn-danger" onclick="closeAssignModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Assign Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>const USER_ROLE = "{{ user.role }}";</script>
+{% endblock %}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FitTrack - Gym Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="/dashboard"><h2>FitTrack</h2></a>
+        </div>
+        <nav class="nav-menu">
+            <a href="/dashboard" class="nav-item"><span>Dashboard</span></a>
+            {% if user.role == 'admin' %}
+            <a href="/members"    class="nav-item"><span>Members</span></a>
+            <a href="/trainers"   class="nav-item"><span>Trainers</span></a>
+            <a href="/sessions"   class="nav-item"><span>Training Sessions</span></a>
+            <a href="/workouts"   class="nav-item"><span>Workout Plans</span></a>
+            <a href="/equipment"  class="nav-item"><span>Equipment</span></a>
+            <a href="/payments"   class="nav-item"><span>Payments</span></a>
+            <a href="/attendance" class="nav-item"><span>Attendance</span></a>
+            {% elif user.role == 'trainer' %}
+            <a href="/sessions"   class="nav-item"><span>My Sessions</span></a>
+            <a href="/workouts"   class="nav-item"><span>Workout Plans</span></a>
+            <a href="/members"    class="nav-item"><span>Members</span></a>
+            {% elif user.role == 'member' %}
+            <a href="/sessions"   class="nav-item"><span>My Sessions</span></a>
+            <a href="/attendance" class="nav-item"><span>My Attendance</span></a>
+            {% endif %}
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            </div>
+            <div class="header-right" style="display:flex;align-items:center;gap:16px;">
+                <span class="user-info" style="color:#94a3b8;font-size:0.9rem;">
+                    {{ user.name }}
+                    <span style="background:#1e3a5f;color:#60a5fa;padding:2px 10px;border-radius:20px;font-size:0.75rem;margin-left:8px;text-transform:capitalize;">{{ user.role }}</span>
+                </span>
+                <a href="/logout" style="color:#ef4444;font-size:0.85rem;text-decoration:none;font-weight:600;">Logout</a>
+            </div>
+        </header>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Global role variable for all JS modules -->
+    <script>const USER_ROLE = "{{ user.role }}";</script>
+
+    <!-- Load JS once here — individual pages must NOT re-load these -->
+    <script src="{{ url_for('static', filename='js/utils/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/members.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/trainers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/attendance.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/sessions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/workouts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/equipment.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/payments.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

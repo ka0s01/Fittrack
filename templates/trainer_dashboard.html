@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Trainer Dashboard — FitTrack{% endblock %}
+{% block page_title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3 id="my-sessions-count">—</h3>
+        <p>My Sessions (Total)</p>
+    </div>
+    <div class="stat-card">
+        <h3 id="upcoming-count">—</h3>
+        <p>Upcoming Sessions</p>
+    </div>
+    <div class="stat-card">
+        <h3 id="completed-count">—</h3>
+        <p>Completed Sessions</p>
+    </div>
+</div>
+
+<div class="card" style="margin-top:24px;">
+    <div class="card-header"><h2>My Upcoming Sessions</h2></div>
+    <table class="table" id="my-sessions-table">
+        <thead><tr><th>Date</th><th>Time</th><th>Member</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const sessions = await apiFetch('/api/sessions');
+    const upcoming  = sessions.filter(s => s.status === 'Scheduled');
+    const completed = sessions.filter(s => s.status === 'Completed');
+
+    document.getElementById('my-sessions-count').textContent = sessions.length;
+    document.getElementById('upcoming-count').textContent    = upcoming.length;
+    document.getElementById('completed-count').textContent   = completed.length;
+
+    const tbody = document.querySelector('#my-sessions-table tbody');
+    tbody.innerHTML = sessions.slice(0, 15).map(s => `
+        <tr>
+            <td>${formatDate(s.session_date)}</td>
+            <td>${s.start_time} - ${s.end_time}</td>
+            <td>${s.member_name}</td>
+            <td>${s.session_type}</td>
+            <td><span class="badge ${getStatusBadge(s.status)}">${s.status}</span></td>
+            <td>${s.status === 'Scheduled'
+                ? `<button class="btn btn-success btn-sm" onclick="markDone(${s.session_id})">Mark Done</button>`
+                : '-'}</td>
+        </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;color:#64748b;">No sessions yet</td></tr>';
+});
+
+async function markDone(id) {
+    await apiFetch(`/api/sessions/${id}/status`, { method: 'PUT', body: JSON.stringify({ status: 'Completed' }) });
+    showAlert('Session marked as completed!');
+    location.reload();
+}
+</script>
+{% endblock %}
